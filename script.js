@@ -7,7 +7,184 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // =============================================================
+    // 0. Cinematic Intro Animation with GSAP
+    // =============================================================
+    
+    // Generate stars dynamically inside SVG
+    const starsGroup = document.getElementById('stars-group');
+    if (starsGroup) {
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            star.setAttribute('cx', Math.random() * 1200);
+            star.setAttribute('cy', Math.random() * 320); // upper sky
+            star.setAttribute('r', Math.random() * 1.5 + 0.5);
+            star.setAttribute('class', 'intro-star');
+            star.setAttribute('opacity', Math.random() * 0.7 + 0.3);
+            starsGroup.appendChild(star);
+        }
+    }
+
+    // Generate floating sparks inside intro-particles
+    const particlesContainer = document.getElementById('intro-particles');
+    if (particlesContainer) {
+        for (let i = 0; i < 35; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'intro-particle-spark';
+            spark.style.left = Math.random() * 100 + 'vw';
+            spark.style.top = Math.random() * 100 + 'vh';
+            spark.style.transform = `scale(${Math.random() * 1.2 + 0.4})`;
+            particlesContainer.appendChild(spark);
+            
+            // Floating animation using GSAP
+            gsap.to(spark, {
+                y: '-=' + (Math.random() * 120 + 40),
+                x: '+=' + (Math.random() * 50 - 25),
+                opacity: Math.random() * 0.7 + 0.1,
+                duration: Math.random() * 5 + 4,
+                repeat: -1,
+                yoyo: true,
+                ease: 'power1.inOut',
+                delay: Math.random() * 4
+            });
+        }
+    }
+
+    let websiteRevealed = false;
+    const revealMainWebsite = () => {
+        if (websiteRevealed) return;
+        websiteRevealed = true;
+        
+        const mainWebsite = document.getElementById('main-website');
+        const introScrollTrack = document.getElementById('intro-scroll-track');
+        const introContainer = document.getElementById('intro-container');
+        
+        // Disable scroll temporary to prevent sudden jump
+        document.body.style.overflow = 'hidden';
+        
+        // Show main website wrapper
+        mainWebsite.classList.add('active');
+        
+        // Smoothly scroll window to absolute top
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        
+        // Complete the sunlight flare animation
+        gsap.timeline()
+            .to('#intro-sun-flare', { opacity: 1, scale: 1.5, duration: 0.8, ease: 'power2.out' })
+            .to('#intro-container', { 
+                opacity: 0, 
+                duration: 0.6, 
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    if (introContainer) introContainer.style.display = 'none';
+                    if (introScrollTrack) introScrollTrack.style.display = 'none';
+                    document.body.style.overflow = ''; // Unlock scroll
+                    
+                    // Trigger ScrollTrigger refresh
+                    ScrollTrigger.refresh();
+                }
+            })
+            // Animate hero content elements in
+            .from('#hero .reveal', {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.15,
+                ease: 'power4.out'
+            }, '-=0.2');
+    };
+
+    // Skip Intro Button handler
+    const skipBtn = document.getElementById('intro-skip-btn');
+    if (skipBtn) {
+        skipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            revealMainWebsite();
+        });
+    }
+
+    // GSAP ScrollTrigger intro timeline setup
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Timeline pinned scroll animation
+    const introTimeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: '#intro-scroll-track',
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1.5,
+            pin: '#intro-container',
+            pinSpacing: false,
+            onLeave: () => {
+                revealMainWebsite();
+            }
+        }
+    });
+
+    // Preset elements
+    gsap.set('#house-1, #house-2, #house-3', { opacity: 0.15 });
+    gsap.set('.solar-panel-group', { opacity: 0 });
+    gsap.set('.solar-panel-group polygon', { strokeDashoffset: 600 });
+    gsap.set('.glow-energy-flow', { strokeDashoffset: 200 });
+
+    // Intro Story Timeline
+    introTimeline
+        // Caption 1: House 1 gets solar energy
+        .to('#caption-1', { opacity: 1, y: 0, duration: 1.5 })
+        .to('#caption-1', { opacity: 0, y: -15, duration: 1.5 }, '+=1')
+        .to('#house-1', { opacity: 1, duration: 2 }, '-=1')
+        .to('#panels-h1', { opacity: 1, duration: 1.5 }, '-=1.2')
+        .to('#panels-h1 polygon', { strokeDashoffset: 0, duration: 3.5, ease: 'power1.inOut' }, '-=0.8')
+        .to('#house-1 .house-window', { className: 'house-window illuminated', duration: 1.5 }, '-=1')
+        .to('#panels-h1 .glow-energy-flow', { strokeDashoffset: 0, duration: 2.5, ease: 'power1.out' }, '-=0.8')
+
+        // Caption 2: House 2 gets solar energy
+        .to('#caption-2', { opacity: 1, y: 0, duration: 1.5 })
+        .to('#caption-2', { opacity: 0, y: -15, duration: 1.5 }, '+=1')
+        .to('#house-2', { opacity: 1, duration: 2 }, '-=1')
+        .to('#panels-h2', { opacity: 1, duration: 1.5 }, '-=1.2')
+        .to('#panels-h2 polygon', { strokeDashoffset: 0, duration: 3.5, ease: 'power1.inOut' }, '-=0.8')
+        .to('#house-2 .house-window', { className: 'house-window illuminated', duration: 1.5 }, '-=1')
+        .to('#panels-h2 .glow-energy-flow', { strokeDashoffset: 0, duration: 2.5, ease: 'power1.out' }, '-=0.8')
+
+        // Caption 3: House 3 gets solar energy
+        .to('#caption-3', { opacity: 1, y: 0, duration: 1.5 })
+        .to('#caption-3', { opacity: 0, y: -15, duration: 1.5 }, '+=1')
+        .to('#house-3', { opacity: 1, duration: 2 }, '-=1')
+        .to('#panels-h3', { opacity: 1, duration: 1.5 }, '-=1.2')
+        .to('#panels-h3 polygon', { strokeDashoffset: 0, duration: 3.5, ease: 'power1.inOut' }, '-=0.8')
+        .to('#house-3 .house-window', { className: 'house-window illuminated', duration: 1.5 }, '-=1')
+        .to('#panels-h3 .glow-energy-flow', { strokeDashoffset: 0, duration: 2.5, ease: 'power1.out' }, '-=0.8')
+
+        // Caption 4: Energy flows to grid, sunrise
+        .to('#caption-4', { opacity: 1, y: 0, duration: 2 })
+        .to('#power-line-1, #power-line-2', { 
+            opacity: 1, 
+            onStart: () => {
+                document.querySelectorAll('.power-cable').forEach(c => c.classList.add('active'));
+            },
+            duration: 2 
+        }, '-=1.5')
+        
+        // Sky sunrise transition
+        .to('#sky-bg', { fill: '#0a301a', duration: 4 }, '-=1')
+        .to('.sky-color-bottom', { stopColor: '#0a301a', duration: 4 }, '-=4')
+        .to('.sky-color-mid', { stopColor: '#165a36', duration: 4 }, '-=4')
+        .to('.sky-color-top', { stopColor: '#041c0f', duration: 4 }, '-=4')
+        
+        // Zoom scene
+        .to('.intro-scene-svg', { scale: 0.78, duration: 5, ease: 'power1.inOut' }, '-=4')
+        .to('#intro-sun-flare', { opacity: 0.6, scale: 0.8, duration: 4 }, '-=3')
+        
+        // Blind out
+        .to('#caption-4', { opacity: 0, y: -10, duration: 1.5 }, '+=0.5')
+        .to('#intro-sun-flare', { opacity: 1, scale: 1.2, duration: 2 })
+        .to('.intro-scene-svg', { filter: 'blur(10px)', opacity: 0, duration: 1.5 }, '-=1.5')
+        .to('#intro-container', { opacity: 0, duration: 1.5 }, '-=1');
+
+    // =============================================================
     // 1. Sticky Header scroll detector
+    // =============================================================
     const header = document.getElementById('main-header');
     
     const handleHeaderScroll = () => {
@@ -93,9 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (product) {
                 // Find matching value inside select dropdown options
                 if (product.includes('Water Heater')) {
-                    interestSelect.value = 'Solar Water Heater (ETC)'; // Default to ETC
+                    interestSelect.value = 'Solar Water Heaters';
                 } else if (product.includes('Solar Panels')) {
-                    interestSelect.value = 'Residential Solar Panels';
+                    interestSelect.value = 'Solar Panels';
+                } else if (product.includes('Solar Inverters')) {
+                    interestSelect.value = 'Solar Inverters';
+                } else if (product.includes('Solar Batteries')) {
+                    interestSelect.value = 'Solar Batteries';
                 }
             }
         });

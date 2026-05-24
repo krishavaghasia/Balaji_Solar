@@ -25,8 +25,154 @@
 </head>
 <body>
 
-    <!-- Sticky Navbar -->
-    <header class="main-header" id="main-header">
+    <!-- Intro Scroll Track (GSAP Scroll Controller) -->
+    <div class="intro-scroll-track" id="intro-scroll-track">
+        <div class="intro-container" id="intro-container">
+            <!-- Skip Intro Button -->
+            <button class="intro-skip-btn" id="intro-skip-btn">SKIP INTRO</button>
+
+            <!-- Ambient glowing background particles -->
+            <div class="intro-particles" id="intro-particles"></div>
+            
+            <!-- Dynamic Vector Neighborhood Scene SVG -->
+            <svg class="intro-scene-svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background gradient sky -->
+                <defs>
+                    <linearGradient id="sky-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                        <stop offset="0%" class="sky-color-bottom" stop-color="#000000" />
+                        <stop offset="40%" class="sky-color-mid" stop-color="#020804" />
+                        <stop offset="100%" class="sky-color-top" stop-color="#000000" />
+                    </linearGradient>
+                    <!-- Solar panel gradient -->
+                    <linearGradient id="panel-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0e2417" />
+                        <stop offset="50%" stop-color="#07120b" />
+                        <stop offset="100%" stop-color="#143020" />
+                    </linearGradient>
+                    <!-- Glow filter for lines -->
+                    <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <!-- Sky background -->
+                <rect width="1200" height="600" fill="url(#sky-gradient)" id="sky-bg" />
+                
+                <!-- Stars and Space Dust (dynamically drawn/animated or static SVG elements) -->
+                <g id="stars-group"></g>
+                
+                <!-- Distant mountains/hills / trees silhouette -->
+                <path d="M 0 520 Q 200 490 400 530 T 800 510 T 1200 525 L 1200 600 L 0 600 Z" fill="#020403" />
+                <path d="M 0 540 Q 300 520 600 550 T 1200 540 L 1200 600 L 0 600 Z" fill="#010201" />
+
+                <!-- Streets & Power Grid / Connection Cables (Neon glowing dashed lines) -->
+                <path id="power-line-1" class="power-cable" d="M 280 430 L 580 440 L 880 430" stroke="#00FF66" stroke-width="2" stroke-dasharray="10,8" fill="none" filter="url(#neon-glow)" opacity="0" />
+                <path id="power-line-2" class="power-cable" d="M 580 440 L 580 580" stroke="#00FF66" stroke-width="2" stroke-dasharray="10,8" fill="none" filter="url(#neon-glow)" opacity="0" />
+
+                <!-- Group for House 1 (Left) -->
+                <g id="house-1" class="neighborhood-house" opacity="0.15">
+                    <!-- Base Structure -->
+                    <rect x="180" y="380" width="160" height="150" fill="#040605" />
+                    <!-- Windows -->
+                    <rect x="210" y="420" width="30" height="40" rx="4" fill="#020302" class="house-window" />
+                    <rect x="280" y="420" width="30" height="40" rx="4" fill="#020302" class="house-window" />
+                    <rect x="245" y="490" width="30" height="40" rx="2" fill="#060907" /> <!-- Door -->
+                    <!-- Triangular Roof -->
+                    <polygon points="160,380 260,280 360,380" fill="#060a08" stroke="#0e1712" stroke-width="1.5" />
+                    
+                    <!-- Rooftop Solar Panels (Initially Hidden/Not Powered) -->
+                    <g id="panels-h1" class="solar-panel-group" opacity="0">
+                        <!-- Panel Base shape -->
+                        <polygon points="190,360 260,290 330,360" fill="url(#panel-gradient)" stroke="#00FF66" stroke-width="2" filter="url(#neon-glow)" />
+                        <!-- Grid lines on panel -->
+                        <line x1="225" y1="325" x2="295" y2="325" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <line x1="260" y1="290" x2="260" y2="360" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <!-- Energy flow lines -->
+                        <path class="glow-energy-flow" d="M 260 360 L 260 380 L 230 380 L 230 420" stroke="#00FF66" stroke-width="2.5" fill="none" filter="url(#neon-glow)" stroke-dasharray="300" stroke-dashoffset="300" />
+                    </g>
+                </g>
+
+                <!-- Group for House 2 (Center) -->
+                <g id="house-2" class="neighborhood-house" opacity="0.15">
+                    <!-- Base Structure -->
+                    <rect x="480" y="350" width="200" height="180" fill="#040605" />
+                    <!-- Windows -->
+                    <rect x="520" y="390" width="40" height="50" rx="4" fill="#020302" class="house-window" />
+                    <rect x="600" y="390" width="40" height="50" rx="4" fill="#020302" class="house-window" />
+                    <rect x="560" y="470" width="40" height="60" rx="2" fill="#060907" /> <!-- Door -->
+                    <!-- Roof -->
+                    <polygon points="460,350 580,250 700,350" fill="#060a08" stroke="#0e1712" stroke-width="1.5" />
+                    
+                    <!-- Rooftop Solar Panels (Initially Hidden/Not Powered) -->
+                    <g id="panels-h2" class="solar-panel-group" opacity="0">
+                        <polygon points="495,330 580,260 665,330" fill="url(#panel-gradient)" stroke="#00FF66" stroke-width="2" filter="url(#neon-glow)" />
+                        <!-- Grid lines -->
+                        <line x1="537" y1="295" x2="622" y2="295" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <line x1="580" y1="260" x2="580" y2="330" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <!-- Energy flow lines -->
+                        <path class="glow-energy-flow" d="M 580 330 L 580 350 L 540 350 L 540 390" stroke="#00FF66" stroke-width="2.5" fill="none" filter="url(#neon-glow)" stroke-dasharray="300" stroke-dashoffset="300" />
+                    </g>
+                </g>
+
+                <!-- Group for House 3 (Right) -->
+                <g id="house-3" class="neighborhood-house" opacity="0.15">
+                    <!-- Base Structure -->
+                    <rect x="820" y="390" width="170" height="140" fill="#040605" />
+                    <!-- Windows -->
+                    <rect x="850" y="430" width="30" height="40" rx="4" fill="#020302" class="house-window" />
+                    <rect x="910" y="430" width="30" height="40" rx="4" fill="#020302" class="house-window" />
+                    <rect x="885" y="490" width="30" height="40" rx="2" fill="#060907" /> <!-- Door -->
+                    <!-- Roof -->
+                    <polygon points="800,390 905,295 1010,390" fill="#060a08" stroke="#0e1712" stroke-width="1.5" />
+                    
+                    <!-- Rooftop Solar Panels (Initially Hidden/Not Powered) -->
+                    <g id="panels-h3" class="solar-panel-group" opacity="0">
+                        <polygon points="835,370 905,305 975,370" fill="url(#panel-gradient)" stroke="#00FF66" stroke-width="2" filter="url(#neon-glow)" />
+                        <!-- Grid lines -->
+                        <line x1="870" y1="337" x2="940" y2="337" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <line x1="905" y1="305" x2="905" y2="370" stroke="rgba(0, 255, 102, 0.4)" stroke-width="1" />
+                        <!-- Energy flow lines -->
+                        <path class="glow-energy-flow" d="M 905 370 L 905 390 L 865 390 L 865 430" stroke="#00FF66" stroke-width="2.5" fill="none" filter="url(#neon-glow)" stroke-dasharray="300" stroke-dashoffset="300" />
+                    </g>
+                </g>
+
+                <!-- Foreground ground vector for depth -->
+                <rect x="0" y="530" width="1200" height="70" fill="#010201" />
+            </svg>
+            
+            <!-- Sunlight Flare Overlay (reveals on sunrise) -->
+            <div class="intro-sun-flare" id="intro-sun-flare"></div>
+
+            <!-- Intro Captions Text -->
+            <div class="intro-caption-container">
+                <div class="intro-caption" id="caption-1">Imagine a neighborhood shrouded in darkness...</div>
+                <div class="intro-caption" id="caption-2">Harnessing the silent power of the sun...</div>
+                <div class="intro-caption" id="caption-3">Rooftop by rooftop, bringing homes to life...</div>
+                <div class="intro-caption" id="caption-4">Welcome to the future of clean, unlimited energy.</div>
+            </div>
+
+            <!-- Scroll Indicator Prompt -->
+            <div class="scroll-prompt" id="scroll-prompt">
+                <span class="prompt-text">SCROLL TO POWER THE NEIGHBORHOOD</span>
+                <div class="prompt-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="19,12 12,19 5,12"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Website Wrapper -->
+    <div id="main-website" class="hidden-main">
+
+        <!-- Sticky Navbar -->
+        <header class="main-header" id="main-header">
         <div class="container navbar-container">
             <a href="#" class="logo" id="header-logo">
                 <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -38,13 +184,11 @@
             
             <nav class="nav-menu" id="nav-menu">
                 <ul>
-                    <li><a href="#hero" class="nav-link active">Home</a></li>
                     <li><a href="#about" class="nav-link">About Us</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
                     <li><a href="#products" class="nav-link">Products</a></li>
-                    <li><a href="#why-choose-us" class="nav-link">Why Choose Us</a></li>
-                    <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                    <li><a href="#benefits" class="nav-link">Benefits</a></li>
                     <li><a href="#gallery" class="nav-link">Gallery</a></li>
-                    <li><a href="#testimonials" class="nav-link">Reviews</a></li>
                     <li><a href="#faq" class="nav-link">FAQ</a></li>
                     <li><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
@@ -68,13 +212,11 @@
             <button class="drawer-close" id="drawer-close" aria-label="Close Menu">&times;</button>
         </div>
         <ul class="drawer-links">
-            <li><a href="#hero" class="drawer-link">Home</a></li>
             <li><a href="#about" class="drawer-link">About Us</a></li>
+            <li><a href="#services" class="drawer-link">Services</a></li>
             <li><a href="#products" class="drawer-link">Products</a></li>
-            <li><a href="#why-choose-us" class="drawer-link">Why Choose Us</a></li>
-            <li><a href="#how-it-works" class="drawer-link">How It Works</a></li>
+            <li><a href="#benefits" class="drawer-link">Benefits</a></li>
             <li><a href="#gallery" class="drawer-link">Gallery</a></li>
-            <li><a href="#testimonials" class="drawer-link">Reviews</a></li>
             <li><a href="#faq" class="drawer-link">FAQ</a></li>
             <li><a href="#contact" class="drawer-link">Contact</a></li>
         </ul>
@@ -93,8 +235,8 @@
                     <div class="hero-badge reveal">
                         <span class="badge-dot"></span> Clean, Renewable & Unlimited Energy
                     </div>
-                    <h1 class="hero-title reveal">Power Your Home with the Sun</h1>
-                    <p class="hero-subtitle reveal">Reduce electricity bills and switch to reliable solar solutions with premium solar water heaters and rooftop solar systems.</p>
+                    <h1 class="hero-title reveal">Power Your Home with Smart Solar Energy</h1>
+                    <p class="hero-subtitle reveal">Premium solar water heaters and solar panel solutions for homes, societies, and businesses.</p>
                     
                     <div class="hero-actions reveal">
                         <a href="#contact" class="btn btn-primary btn-lg" id="hero-primary-cta">Get Free Quote</a>
@@ -181,116 +323,206 @@
             </div>
         </section>
 
-        <!-- Products & Services Section -->
+        <!-- Services Section -->
+        <section class="services-section" id="services">
+            <div class="container">
+                <div class="section-header text-center reveal">
+                    <span class="section-badge">Our Services</span>
+                    <h2 class="section-title">End-to-End Solar Solutions</h2>
+                    <p class="section-subtitle">We handle the entire journey of your transition to solar energy, ensuring a hassle-free and professional setup.</p>
+                </div>
+                <div class="grid grid-4 services-grid">
+                    <div class="service-card glass-card reveal">
+                        <div class="service-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <h3>Solar Water Heater Installation</h3>
+                        <p>Expert setup of ETC and FPC solar heaters tailored to your daily hot water needs for home or business.</p>
+                    </div>
+                    <div class="service-card glass-card reveal">
+                        <div class="service-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="9" y1="3" x2="9" y2="21"/>
+                                <line x1="15" y1="3" x2="15" y2="21"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="3" y1="15" x2="21" y2="15"/>
+                            </svg>
+                        </div>
+                        <h3>Rooftop Solar Installation</h3>
+                        <p>Turn your empty terrace into a power plant. Grid-tied monocrystalline half-cut panel setups with full net-metering.</p>
+                    </div>
+                    <div class="service-card glass-card reveal">
+                        <div class="service-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                            </svg>
+                        </div>
+                        <h3>Maintenance & Support</h3>
+                        <p>Regular system diagnostics, safety wiring checks, and chemical panel cleaning to guarantee maximum daily yield.</p>
+                    </div>
+                    <div class="service-card glass-card reveal">
+                        <div class="service-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
+                                <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
+                                <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
+                                <line x1="9.17" y1="14.83" x2="4.93" y2="19.07"/>
+                            </svg>
+                        </div>
+                        <h3>Site Survey & Consultation</h3>
+                        <p>Professional physical and remote 3D shadow analysis to map layout capability and estimate financial ROI models.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
         <section class="products-section" id="products">
             <div class="container">
                 <div class="section-header text-center reveal">
-                    <span class="section-badge">Our Solutions</span>
-                    <h2 class="section-title">High-Performance Solar Energy Systems</h2>
+                    <span class="section-badge">Our Products</span>
+                    <h2 class="section-title">Premium Solar Technology</h2>
                     <p class="section-subtitle">Specially engineered for maximum efficiency, long life, and quick return on investment in the Indian climate.</p>
                 </div>
 
-                <div class="grid grid-2 products-grid">
-                    <!-- Product Card A: Solar Water Heaters -->
-                    <div class="product-card reveal">
+                <div class="grid grid-4 products-grid">
+                    <!-- Product 1: Solar Water Heaters -->
+                    <div class="product-card glass-card reveal">
                         <div class="product-img-wrapper">
                             <img src="assets/gallery-water-heater.png" alt="Rooftop solar water heater installation" class="product-img">
-                            <span class="product-tag">Zero Electricity Bill</span>
+                            <span class="product-tag">ETC / FPC Types</span>
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">Solar Water Heaters</h3>
-                            <p class="product-intro-desc">Eliminate water heating expenses completely. Our systems supply hot water 365 days a year using state-of-the-art absorption technology.</p>
-                            
-                            <div class="product-spec-box">
-                                <h4 class="spec-heading">Available Technology Types:</h4>
-                                <div class="tech-types">
-                                    <div class="tech-badge">
-                                        <strong>ETC Type (Evacuated Tube Collector)</strong>
-                                        <p>Vacuum glass tubes. Works efficiently even in winter & cloudy days. Extremely cost-effective.</p>
-                                    </div>
-                                    <div class="tech-badge">
-                                        <strong>FPC Type (Flat Plate Collector)</strong>
-                                        <p>Heavy copper absorber. Sturdy metallic frame, ideal for pressurized systems and hard-water regions.</p>
-                                    </div>
-                                </div>
-
-                                <div class="spec-list">
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Capacities:</strong> 100 LPD, 200 LPD, 250 LPD, 300 LPD, 500 LPD & Industrial scale</span>
-                                    </div>
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Tank Protection:</strong> Inner glassline/stainless steel coatings to prevent corrosion</span>
-                                    </div>
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Saves Energy:</strong> Cuts household heating cost by up to 80%</span>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <p class="product-desc-short">Zero electricity cost water heating. Available in Evacuated Tube (ETC) and Flat Plate Collector (FPC) systems.</p>
+                            <div class="product-meta">Capacities: 100 - 500+ LPD</div>
                             <div class="product-footer">
-                                <a href="#contact" class="btn btn-primary product-cta" data-product="Solar Water Heaters">Get Free Quote</a>
+                                <a href="#contact" class="btn btn-primary product-cta btn-block btn-sm" data-product="Solar Water Heaters">Inquire Now</a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Card B: Solar Panels / Rooftop Solar -->
-                    <div class="product-card reveal">
+                    <!-- Product 2: Solar Panels -->
+                    <div class="product-card glass-card reveal">
                         <div class="product-img-wrapper">
                             <img src="assets/gallery-res-solar.png" alt="Rooftop solar panel grids" class="product-img">
-                            <span class="product-tag">Up to 90% Bill Reduction</span>
+                            <span class="product-tag">Monocrystalline</span>
                         </div>
                         <div class="product-content">
-                            <h3 class="product-title">Solar Panels / Rooftop Solar</h3>
-                            <p class="product-intro-desc">Transform your empty roof into a power generator. Feed clean energy directly to your home and export excess electricity back to the grid.</p>
-                            
-                            <div class="product-spec-box">
-                                <h4 class="spec-heading">Solutions Offered:</h4>
-                                <div class="tech-types">
-                                    <div class="tech-badge">
-                                        <strong>Residential Solar Systems</strong>
-                                        <p>Custom 3kW, 5kW, 8kW, 10kW+ installations designed to match your monthly electrical load and offset grid usage.</p>
-                                    </div>
-                                    <div class="tech-badge">
-                                        <strong>Commercial & Industrial Systems</strong>
-                                        <p>Rooftop setups for factories, GIDCs, schools, apartments, and warehouses to lower high tariff slabs.</p>
-                                    </div>
-                                </div>
-
-                                <div class="spec-list">
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Cell Technology:</strong> Grade-A high-efficiency Monocrystalline Half-Cut cells</span>
-                                    </div>
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Net-Meter Support:</strong> Full assistance in grid integration and local electricity board approvals</span>
-                                    </div>
-                                    <div class="spec-item">
-                                        <span class="spec-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </span>
-                                        <span><strong>Warranty:</strong> 25 years performance output warranty</span>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <h3 class="product-title">Solar Panels</h3>
+                            <p class="product-desc-short">High-efficiency half-cut cells. Excellent performance in low-light conditions with a 25-year warranty.</p>
+                            <div class="product-meta">Efficiencies up to 22.5%</div>
                             <div class="product-footer">
-                                <a href="#contact" class="btn btn-primary product-cta" data-product="Solar Panels / Rooftop Solar">Get Free Quote</a>
+                                <a href="#contact" class="btn btn-primary product-cta btn-block btn-sm" data-product="Solar Panels">Inquire Now</a>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Product 3: Solar Inverters -->
+                    <div class="product-card glass-card reveal">
+                        <div class="product-img-wrapper">
+                            <img src="assets/gallery-com-solar.png" alt="Solar Inverter System" class="product-img">
+                            <span class="product-tag">On-Grid & Hybrid</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">Solar Inverters</h3>
+                            <p class="product-desc-short">Smart synchronized grid tie-ins and hybrid control units featuring real-time mobile app efficiency monitoring.</p>
+                            <div class="product-meta">98.5% Conversion Efficiency</div>
+                            <div class="product-footer">
+                                <a href="#contact" class="btn btn-primary product-cta btn-block btn-sm" data-product="Solar Inverters">Inquire Now</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4: Solar Batteries -->
+                    <div class="product-card glass-card reveal">
+                        <div class="product-img-wrapper">
+                            <img src="assets/gallery-battery.png" alt="Solar Battery Bank" class="product-img">
+                            <span class="product-tag">Tubular / Lithium</span>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">Solar Batteries</h3>
+                            <p class="product-desc-short">Reliable deep-cycle energy storage solutions. Long lifespan backup for residential and commercial loads.</p>
+                            <div class="product-meta">Warranty up to 5-10 Years</div>
+                            <div class="product-footer">
+                                <a href="#contact" class="btn btn-primary product-cta btn-block btn-sm" data-product="Solar Batteries">Inquire Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits-section" id="benefits">
+            <div class="container">
+                <div class="section-header text-center reveal">
+                    <span class="section-badge">Key Benefits</span>
+                    <h2 class="section-title">Why Transition to Solar?</h2>
+                    <p class="section-subtitle">Unlock immediate savings and long-term security by switching to clean energy.</p>
+                </div>
+                <div class="grid grid-3 benefits-grid reveal">
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <h3>Save Electricity Bills</h3>
+                        <p>Reduce your monthly power expenditures by up to 90% immediately. Achieve complete payback inside 4 years.</p>
+                    </div>
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <h3>Eco-Friendly</h3>
+                        <p>Offset carbon footprint. One standard home rooftop solar setup is equivalent to planting 150+ trees per year.</p>
+                    </div>
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3>Low Maintenance</h3>
+                        <p>No complex moving parts. Basic water rinsing every two weeks keeps your panels running at optimal solar efficiency.</p>
+                    </div>
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <h3>Long Lifespan</h3>
+                        <p>Rooftop solar panel grids are manufactured to withstand extreme Indian summer, winter, and monsoon cycles for 25+ years.</p>
+                    </div>
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h3>Government Subsidy Support</h3>
+                        <p>Avail official MNRE national portal subsidies. Get direct cashback deposits into your bank account post-inspection.</p>
+                    </div>
+                    <div class="benefit-card glass-card">
+                        <div class="benefit-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>
+                            </svg>
+                        </div>
+                        <h3>Energy Independence</h3>
+                        <p>Generate your own power. Say goodbye to frequent grid blackouts, high utility tariff hikes, and load-shedding.</p>
                     </div>
                 </div>
             </div>
@@ -735,10 +967,10 @@
                                 <label for="form-interest" class="form-label">Product of Interest *</label>
                                 <select id="form-interest" class="form-control" required>
                                     <option value="" disabled selected>Choose a solution</option>
-                                    <option value="Solar Water Heater (ETC)">Solar Water Heater (ETC Type)</option>
-                                    <option value="Solar Water Heater (FPC)">Solar Water Heater (FPC Type)</option>
-                                    <option value="Residential Solar Panels">Residential Rooftop Solar Panels</option>
-                                    <option value="Commercial Solar Panels">Commercial Rooftop Solar Grid</option>
+                                    <option value="Solar Water Heaters">Solar Water Heaters (ETC/FPC)</option>
+                                    <option value="Solar Panels">Rooftop Solar Panels</option>
+                                    <option value="Solar Inverters">Solar Inverters</option>
+                                    <option value="Solar Batteries">Solar Batteries</option>
                                     <option value="Solar Maintenance & Wash">System Cleaning & Maintenance</option>
                                 </select>
                                 <span class="error-msg" id="interest-error">Please select a product option</span>
@@ -853,6 +1085,11 @@
         </a>
     </div>
 
+    </div> <!-- /#main-website -->
+
+    <!-- GSAP Animations Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Main Interaction Scripts -->
     <script src="script.js"></script>
 </body>
